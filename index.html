@@ -2713,7 +2713,8 @@ const NON_UNIT_SHEETS = new Set(['rekapitulasi','definisi','referensi','input_ha
 
 function xlCellStr(v, isTimeCol){
   if(v===null||v===undefined||v==='') return '';
-  if(v instanceof Date){
+  const isDateLike = v && typeof v==='object' && typeof v.getTime==='function' && !isNaN(v.getTime());
+  if(isDateLike){
     if(isTimeCol){
       const hh=String(v.getHours()).padStart(2,'0'), mm=String(v.getMinutes()).padStart(2,'0'), ss=String(v.getSeconds()).padStart(2,'0');
       return hh+':'+mm+':'+ss;
@@ -2741,9 +2742,22 @@ function parseRekapitulasi(ws){
   const g = (r,c)=>xlCellStr(gcell(grid,r,c));
   const rows = [];
   let maxRow = grid.length;
+  let blankStreak = 0;
   for(let r=5; r<=maxRow; r++){
     const name = gcell(grid,r,2);
-    if(name===null || name==='') continue;
+    const noVal = gcell(grid,r,1);
+    const unitIdVal = gcell(grid,r,4);
+    // a real unit row always has a numeric "No" in col A and a Unit ID in col D.
+    // Rows without these (blank separators, "NOTES :" section, color-legend rows like
+    // SCRAP/DOWN/POOR/FAIR/GOOD that only fill col B) must be skipped, not counted as units.
+    const noNum = Number(noVal);
+    const isRealUnitRow = name!==null && name!=='' && noVal!==null && noVal!=='' && !isNaN(noNum) && unitIdVal!==null && unitIdVal!=='';
+    if(!isRealUnitRow){
+      blankStreak++;
+      if(blankStreak>=3 && rows.length>0) break; // past the table — e.g. hit the NOTES/legend section
+      continue;
+    }
+    blankStreak = 0;
     rows.push({
       no:g(r,1), name:g(r,2), type:g(r,3), unitId:g(r,4),
       contract:g(r,5), contractStart:g(r,6), contractEnd:g(r,7),
@@ -2774,6 +2788,12 @@ function parseUnitSheet(ws){
   for(let r=15; r<=maxRow; r++){
     const tgl = gcell(grid,r,1);
     if(tgl===null || tgl==='') continue;
+    // Guard against a stray header row leaking into the data zone (e.g. an extra row
+    // inserted by mistake in one sheet, pushing "Tanggal"/"Unit ID"/... labels down here
+    // instead of real dates) — only accept rows whose col A is an actual date.
+    const isDateObj = tgl && typeof tgl==='object' && typeof tgl.getTime==='function' && !isNaN(tgl.getTime());
+    const isDateCell = isDateObj || (typeof tgl==='number') || (typeof tgl==='string' && parseFlexDate(tgl)!==null);
+    if(!isDateCell) continue;
     const unitId = xlCellStr(gcell(grid,r,3)) || lastUnitId;
     const equipType = xlCellStr(gcell(grid,r,4)) || lastType;
     const op = xlCellStr(gcell(grid,r,5)) || lastOp;
@@ -2930,10 +2950,24 @@ async function handleExcelFiles(fileList){
       : 'Data berhasil diperbarui — '+MASTER.length+' unit, '+Object.keys(DAILY).length+' unit dengan log harian.')
       + (saved ? ' Tersimpan otomatis di browser ini.' : ' (Autosave gagal — data hanya berlaku untuk sesi ini.)');
     showToast(msg);
+
+    if(parsedList.length>1){
+      const mismatch = findUnitIdMismatches(parsedList);
+      if(mismatch.length){
+        setTimeout(()=> showToast('Perhatian: '+mismatch.length+' Unit ID tidak konsisten antar file (kemungkinan typo di salah satu bulan), sehingga muncul sebagai unit terpisah: '+mismatch.join(', ')+'. Cek & samakan Unit ID di sheet Rekapitulasi masing-masing file kalau seharusnya unit yang sama.', true), 600);
+      }
+    }
   }catch(err){
     console.error(err);
     showToast('Gagal memproses file Excel: '+err.message, true);
   }
+}
+
+function findUnitIdMismatches(parsedList){
+  const perFileSets = parsedList.map(p=> new Set(p.master.map(u=>u.unitId)));
+  const allIds = new Set();
+  perFileSets.forEach(s=> s.forEach(id=>allIds.add(id)));
+  return [...allIds].filter(id=> !perFileSets.every(s=>s.has(id)));
 }
 
 function initUploader(){
