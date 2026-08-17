@@ -73,9 +73,9 @@ button{font-family:inherit; cursor:pointer;}
 .sidebar-period{
   margin:14px 16px 6px; padding:9px 12px; background:var(--bg2); border:1px solid var(--border-soft);
   border-radius:var(--radius-sm); font-family:var(--mono); font-size:10.5px; color:var(--text-dim);
-  display:flex; justify-content:space-between; align-items:center;
+  display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;
 }
-.sidebar-period b{ color:var(--yellow); font-weight:600; }
+.sidebar-period b{ color:var(--yellow); font-weight:600; text-align:right; font-size:10px; line-height:1.4; }
 
 .nav{ flex:1; overflow-y:auto; padding:10px 12px 12px; }
 .nav-label{ font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--text-faint); margin:14px 8px 6px; font-family:var(--mono);}
@@ -118,6 +118,19 @@ button{font-family:inherit; cursor:pointer;}
 .upload-btn:hover{ color:var(--yellow); border-color:var(--yellow-dim); background:var(--bg3); }
 .upload-btn i{ font-size:13px; width:16px; text-align:center; flex-shrink:0; }
 
+.autosave-indicator{
+  margin:0 16px 10px; padding:8px 10px; border-radius:8px; background:var(--green-dim); border:1px solid rgba(47,212,122,.25);
+  display:flex; align-items:center; gap:8px; font-size:10.5px; color:var(--green);
+}
+.autosave-indicator i{ font-size:12px; flex-shrink:0;}
+.autosave-indicator .as-text{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.autosave-indicator .as-reset{
+  background:none; border:1px solid rgba(47,212,122,.35); color:var(--green); border-radius:6px; padding:2px 8px;
+  font-size:10px; font-weight:700; flex-shrink:0;
+}
+.autosave-indicator .as-reset:hover{ background:rgba(47,212,122,.15);}
+.sidebar.collapsed .autosave-indicator{ display:none !important; }
+
 .sidebar.collapsed{ width:76px; }
 .sidebar.collapsed .brand-text,
 .sidebar.collapsed .sidebar-period,
@@ -139,12 +152,13 @@ button{font-family:inherit; cursor:pointer;}
 .toast{
   position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(20px); z-index:200;
   background:var(--bg2); border:1px solid var(--border); border-left:3px solid var(--yellow); border-radius:9px;
-  padding:12px 18px; font-size:12.5px; color:var(--text); display:flex; align-items:center; gap:10px;
+  padding:12px 18px; font-size:12.5px; color:var(--text); display:flex; align-items:flex-start; gap:10px;
   box-shadow:0 12px 30px rgba(0,0,0,.4); opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease;
+  max-width:min(92vw,520px); line-height:1.5;
 }
 .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 .toast.error{ border-left-color:var(--red); }
-.toast i{ color:var(--yellow); }
+.toast i{ color:var(--yellow); margin-top:2px; flex-shrink:0; }
 .toast.error i{ color:var(--red); }
 
 
@@ -392,6 +406,40 @@ select.tt-select{
 .status-ontrack-meter{ background:var(--green-dim); color:var(--green);}
 .status-none{ background:var(--bg2); color:var(--text-faint);}
 
+/* ===== date range filter bar ===== */
+.filterbar{
+  position:sticky; top:65px; z-index:35; background:rgba(10,10,12,.92); backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border-soft); padding:10px 26px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+}
+.filterbar.hidden{ display:none; }
+.fb-label{ font-size:11.5px; color:var(--text-dim); font-weight:600; display:flex; align-items:center; gap:6px; flex-shrink:0;}
+.fb-label i{ color:var(--yellow); }
+.fb-presets{ display:flex; gap:5px; flex-wrap:wrap;}
+.fb-preset{
+  padding:6px 12px; border-radius:20px; font-size:11.5px; font-weight:600; background:var(--bg2);
+  border:1px solid var(--border-soft); color:var(--text-dim);
+}
+.fb-preset:hover{ color:var(--text); border-color:var(--text-faint);}
+.fb-preset.active{ background:linear-gradient(155deg,var(--yellow),var(--yellow-deep)); color:#0a0a0c; border-color:transparent;}
+.fb-custom-range{ display:flex; align-items:center; gap:7px;}
+.fb-custom-range input[type="date"]{
+  background:var(--bg2); border:1px solid var(--border-soft); color:var(--text); border-radius:7px; padding:6px 9px;
+  font-family:var(--mono); font-size:11.5px; outline:none; color-scheme:dark;
+}
+.fb-custom-range span{ color:var(--text-faint); font-size:11px;}
+.fb-summary{ margin-left:auto; font-family:var(--mono); font-size:11px; color:var(--text-faint);}
+@media(max-width:760px){
+  .filterbar{ padding:10px 14px; top:57px; }
+  .fb-summary{ margin-left:0; width:100%; }
+}
+
+/* ===== chart granularity toggle ===== */
+.gran-toggle{ display:flex; gap:4px; background:var(--bg2); border:1px solid var(--border-soft); border-radius:20px; padding:3px; flex-shrink:0;}
+.gran-btn{ padding:5px 11px; border-radius:16px; font-size:10.5px; font-weight:600; color:var(--text-faint); background:none; border:none;}
+.gran-btn:hover{ color:var(--text);}
+.gran-btn.active{ background:linear-gradient(155deg,var(--yellow),var(--yellow-deep)); color:#0a0a0c;}
+
+
 /* ===== guide / help page ===== */
 .guide-step{ display:flex; gap:14px; padding:14px 0; border-bottom:1px solid var(--border-soft);}
 .guide-step:last-child{ border-bottom:none;}
@@ -472,7 +520,12 @@ footer.app-footer{ text-align:center; padding:26px; color:var(--text-faint); fon
       <span>PERIOD</span><b id="periodLabel">AGT 2026</b>
     </div>
     <button class="upload-btn" id="uploadBtn"><i class="fa-solid fa-file-arrow-up"></i><span class="nav-text">Upload Data Excel</span></button>
-    <input type="file" id="excelFileInput" accept=".xlsx,.xls" style="display:none;">
+    <input type="file" id="excelFileInput" accept=".xlsx,.xls" multiple style="display:none;">
+    <div class="autosave-indicator" id="autosaveIndicator" style="display:none;">
+      <i class="fa-solid fa-cloud-arrow-up"></i>
+      <span class="as-text nav-text">Tersimpan otomatis</span>
+      <button class="as-reset nav-text" id="btnResetData" title="Kembalikan ke data bawaan">Reset</button>
+    </div>
     <nav class="nav">
       <div class="nav-label">Overview</div>
       <div class="nav-item active" data-view="dashboard"><i class="fa-solid fa-gauge-high"></i><span class="nav-text">Dashboard</span><span class="nav-badge" id="navAlertCount">0</span></div>
@@ -514,6 +567,25 @@ footer.app-footer{ text-align:center; padding:26px; color:var(--text-faint); fon
       <button class="topbar-alert-btn" id="topAlertBtn" title="Lihat alert"><i class="fa-solid fa-bell"></i><span class="dot" id="alertDot"></span></button>
     </div>
 
+    <div class="filterbar" id="dateFilterBar">
+      <span class="fb-label"><i class="fa-solid fa-calendar-days"></i> Rentang:</span>
+      <div class="fb-presets" id="fbPresets">
+        <button class="fb-preset active" data-mode="all">Semua</button>
+        <button class="fb-preset" data-mode="daily">Harian</button>
+        <button class="fb-preset" data-mode="weekly">Mingguan</button>
+        <button class="fb-preset" data-mode="monthly">Bulanan</button>
+        <button class="fb-preset" data-mode="yearly">Tahunan</button>
+        <button class="fb-preset" data-mode="custom">Custom</button>
+      </div>
+      <div class="fb-custom-range" id="fbCustomRange" style="display:none;">
+        <input type="date" id="fbStart">
+        <span>–</span>
+        <input type="date" id="fbEnd">
+        <button class="btn btn-sm btn-primary" id="fbApplyCustom">Terapkan</button>
+      </div>
+      <span class="fb-summary" id="fbSummary"></span>
+    </div>
+
     <div class="content">
       <!-- ============ DASHBOARD ============ -->
       <section class="view active" id="view-dashboard">
@@ -536,7 +608,13 @@ footer.app-footer{ text-align:center; padding:26px; color:var(--text-faint); fon
         <div class="grid-2">
           <div class="panel">
             <div class="panel-head">
-              <div><h3>Trend PA / MA / Utilisasi Harian</h3><div class="ph-sub">Rata-rata fleet · 1—31 Agustus 2026</div></div>
+              <div><h3>Trend PA / MA / Utilisasi</h3><div class="ph-sub">Rata-rata fleet</div></div>
+              <div class="gran-toggle" id="granDashboard">
+                <button class="gran-btn active" data-gran="daily">Harian</button>
+                <button class="gran-btn" data-gran="weekly">Mingguan</button>
+                <button class="gran-btn" data-gran="monthly">Bulanan</button>
+                <button class="gran-btn" data-gran="yearly">Tahunan</button>
+              </div>
             </div>
             <div class="chart-wrap"><canvas id="chartTrend"></canvas></div>
           </div>
@@ -681,29 +759,43 @@ footer.app-footer{ text-align:center; padding:26px; color:var(--text-faint); fon
 
         <div class="grid-2">
           <div class="panel">
-            <div class="panel-head"><div><h3 id="reliChartTitle">Trend Harian Unit</h3><div class="ph-sub">PA · MA · Utilisasi (%)</div></div></div>
+            <div class="panel-head">
+              <div><h3 id="reliChartTitle">Trend Harian Unit</h3><div class="ph-sub">PA · MA · Utilisasi (%)</div></div>
+              <div class="gran-toggle" id="granReliability">
+                <button class="gran-btn active" data-gran="daily">Harian</button>
+                <button class="gran-btn" data-gran="weekly">Mingguan</button>
+                <button class="gran-btn" data-gran="monthly">Bulanan</button>
+                <button class="gran-btn" data-gran="yearly">Tahunan</button>
+              </div>
+            </div>
             <div class="chart-wrap"><canvas id="chartUnitTrend"></canvas></div>
           </div>
           <div class="panel">
-            <div class="panel-head"><div><h3>Breakdown Jam Kerja</h3><div class="ph-sub">Working vs Standby vs Downtime</div></div></div>
+            <div class="panel-head">
+              <div><h3>Breakdown Jam Kerja</h3><div class="ph-sub">Working vs Standby vs Downtime</div></div>
+              <div class="gran-toggle" id="granHours">
+                <button class="gran-btn active" data-gran="daily">Harian</button>
+                <button class="gran-btn" data-gran="weekly">Mingguan</button>
+                <button class="gran-btn" data-gran="monthly">Bulanan</button>
+                <button class="gran-btn" data-gran="yearly">Tahunan</button>
+              </div>
+            </div>
             <div class="chart-wrap"><canvas id="chartUnitHours"></canvas></div>
           </div>
         </div>
 
-        <div class="grid-2">
-          <div class="panel">
-            <div class="panel-head"><div><h3>Ranking PA Seluruh Unit</h3><div class="ph-sub">Physical Availability rata-rata bulan ini</div></div></div>
-            <div class="chart-wrap"><canvas id="chartPaRanking"></canvas></div>
-          </div>
-          <div class="panel">
-            <div class="panel-head"><div><h3>Frekuensi &amp; Rata-rata Downtime per Kejadian</h3><div class="ph-sub">Proxy MTBF/MTTR dari log harian (per unit dgn data)</div></div></div>
-            <div class="table-scroll">
+        <div class="panel" style="margin-bottom:14px;">
+          <div class="panel-head"><div><h3>Ranking PA Seluruh Unit</h3><div class="ph-sub">Physical Availability rata-rata bulan ini</div></div></div>
+          <div class="chart-wrap" id="chartPaRankingWrap"><canvas id="chartPaRanking"></canvas></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div><h3>Frekuensi &amp; Rata-rata Downtime per Kejadian</h3><div class="ph-sub">Proxy MTBF/MTTR dari log harian (per unit dgn data)</div></div></div>
+          <div class="table-scroll">
               <table id="mtbfTable">
                 <thead><tr><th>Unit</th><th>Hari Working</th><th>Kejadian Mech.Down</th><th>Total Jam Down</th><th>Avg Downtime/Kejadian</th></tr></thead>
                 <tbody id="mtbfTbody"></tbody>
               </table>
             </div>
-          </div>
         </div>
       </section>
       <!-- ============ DELAY & PARETO ============ -->
@@ -886,13 +978,18 @@ footer.app-footer{ text-align:center; padding:26px; color:var(--text-faint); fon
           <div>Semua proses baca &amp; olah data Excel berjalan <b>langsung di browser kamu</b> (tidak diunggah ke server manapun). File hanya perlu dibuka ulang untuk melihat data terbaru — aman dipakai untuk data operasional internal.</div>
         </div>
 
+        <div class="note-box">
+          <i class="fa-solid fa-calendar-days"></i>
+          <div>Bar <b>"Rentang"</b> di bawah topbar (muncul di tab Dashboard, Daily Monitoring, PA/MA/UA/Util, dan Delay &amp; Pareto) memfilter data berdasarkan tanggal — pilih preset <b>Harian / Mingguan / Bulanan / Tahunan</b>, atau <b>Custom</b> untuk rentang tanggal bebas. Data master (Unit Master, Service Schedule, Forecast) tidak ikut terfilter karena itu menampilkan kondisi &amp; jadwal PM terkini, bukan histori periode tertentu.</div>
+        </div>
+
         <div class="panel" style="margin-bottom:14px;">
           <div class="panel-head"><div><h3>Mulai Cepat</h3><div class="ph-sub">4 langkah dasar memakai aplikasi ini</div></div></div>
           <div class="guide-step">
             <div class="guide-step-num">1</div>
             <div class="guide-step-body">
-              <h4>Upload data Excel bulan berjalan</h4>
-              <p>Klik tombol <b>"Upload Data Excel"</b> di sidebar kiri (di bawah label PERIOD), lalu pilih file <b>.xlsx</b> dengan format sama seperti template — ada sheet <b>"Rekapitulasi"</b> (data master unit) dan satu sheet terpisah untuk tiap unit yang berisi log harian. Kalau tidak upload, aplikasi tetap menampilkan data terakhir yang sudah tertanam di dalamnya.</p>
+              <h4>Upload data Excel — bisa satu atau beberapa bulan sekaligus</h4>
+              <p>Klik tombol <b>"Upload Data Excel"</b> di sidebar kiri, lalu pilih satu file atau <b>beberapa file sekaligus</b> (misalnya Juni, Juli, Agustus) — tahan <b>Ctrl</b> (Windows) / <b>Cmd</b> (Mac) saat memilih file di dialog upload. Aplikasi otomatis menggabungkan log harian dari semua file berdasarkan tanggal secara kronologis, sementara data master (kondisi unit &amp; status PM) memakai snapshot dari file dengan tanggal data paling baru. Format tiap file harus sama seperti template — ada sheet <b>"Rekapitulasi"</b> dan satu sheet per unit untuk log harian.</p>
             </div>
           </div>
           <div class="guide-step">
@@ -1035,6 +1132,10 @@ footer.app-footer{ text-align:center; padding:26px; color:var(--text-faint); fon
           <div class="panel-head"><div><h3>Pertanyaan Umum</h3><div class="ph-sub">Klik pertanyaan untuk lihat jawabannya</div></div></div>
           <div id="faqList">
             <div class="faq-item">
+              <div class="faq-q">Bisakah upload beberapa file Excel bulanan sekaligus? <i class="fa-solid fa-chevron-down"></i></div>
+              <div class="faq-a">Bisa. Saat memilih file di dialog upload, pilih lebih dari satu file (tahan Ctrl/Cmd, atau seleksi rentang dengan Shift). Aplikasi akan menggabungkan log harian seluruh file secara kronologis per tanggal (kalau ada tanggal yang tumpang tindih antar file, data dari file dengan tanggal terbaru yang dipakai), sehingga trend chart, Gantt, dan forecast bisa mencakup rentang beberapa bulan sekaligus. Data master (kondisi unit &amp; status PM di sheet Rekapitulasi) akan memakai snapshot dari file yang datanya paling baru, karena itu mencerminkan kondisi unit terkini.</div>
+            </div>
+            <div class="faq-item">
               <div class="faq-q">Kenapa saat upload muncul "File tidak dikenali"? <i class="fa-solid fa-chevron-down"></i></div>
               <div class="faq-a">Aplikasi mencari sheet bernama <b>"Rekapitulasi"</b> untuk data master, dan sheet-sheet lain (satu per unit) untuk log harian. Kalau nama sheet atau susunan kolomnya beda dari template asli, data tidak akan terbaca dengan benar. Pastikan file yang diupload masih memakai struktur yang sama.</div>
             </div>
@@ -1049,6 +1150,10 @@ footer.app-footer{ text-align:center; padding:26px; color:var(--text-faint); fon
             <div class="faq-item">
               <div class="faq-q">Apakah interval PM yang saya ubah akan hilang kalau ditutup? <i class="fa-solid fa-chevron-down"></i></div>
               <div class="faq-a">Tidak — interval tersimpan di browser (localStorage) begitu tombol "Terapkan" diklik, jadi tetap kepakai walau tab/aplikasi ditutup dan dibuka lagi di komputer yang sama. Kalau dibuka di komputer lain, interval kembali ke default (250 HM / 5.000 KM) sampai diatur ulang.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-q">Apakah data yang saya upload tersimpan otomatis? <i class="fa-solid fa-chevron-down"></i></div>
+              <div class="faq-a">Ya — setiap kali upload berhasil, data langsung tersimpan otomatis di browser (localStorage) di komputer itu. Jadi kalau aplikasi/tab ditutup lalu dibuka lagi filenya di komputer yang sama, data terakhir yang diupload akan otomatis termuat, bukan data bawaan file. Indikator hijau "Tersimpan otomatis" di sidebar menunjukkan kapan terakhir disimpan. Untuk kembali ke data bawaan file ini, klik tombol "Reset" di sebelah indikator tersebut. Autosave ini khusus untuk komputer/browser itu saja — kalau file HTML-nya dibuka di komputer lain, yang muncul tetap data bawaan sampai upload ulang di sana.</div>
             </div>
             <div class="faq-item">
               <div class="faq-q">Kenapa estimasi tanggal servis di Forecast kadang kosong? <i class="fa-solid fa-chevron-down"></i></div>
@@ -1096,6 +1201,12 @@ footer.app-footer{ text-align:center; padding:26px; color:var(--text-faint); fon
         </div>
       </div>
       <div class="tab-pane" id="tab-trend">
+        <div class="gran-toggle" id="granModal" style="margin-bottom:12px;">
+          <button class="gran-btn active" data-gran="daily">Harian</button>
+          <button class="gran-btn" data-gran="weekly">Mingguan</button>
+          <button class="gran-btn" data-gran="monthly">Bulanan</button>
+          <button class="gran-btn" data-gran="yearly">Tahunan</button>
+        </div>
         <div class="chart-wrap"><canvas id="modalTrendChart"></canvas></div>
       </div>
     </div>
@@ -1111,6 +1222,20 @@ footer.app-footer{ text-align:center; padding:26px; color:var(--text-faint); fon
 (function(){
 "use strict";
 let RAW = JSON.parse(document.getElementById('fleet-data-json').textContent);
+const ORIGINAL_RAW = JSON.parse(JSON.stringify(RAW)); /* pristine data baked into this file, used for "Reset ke Data Bawaan" */
+let AUTOSAVE_INFO = null; /* {ts} if a saved snapshot was restored on load */
+(function tryLoadAutosave(){
+  try{
+    const raw = localStorage.getItem('mineroz_fleet_snapshot');
+    if(raw){
+      const parsed = JSON.parse(raw);
+      if(parsed && Array.isArray(parsed.master) && parsed.daily){
+        RAW = parsed;
+        AUTOSAVE_INFO = { ts: localStorage.getItem('mineroz_fleet_snapshot_ts') || '' };
+      }
+    }
+  }catch(e){ /* localStorage unavailable — silently keep embedded data */ }
+})();
 let MASTER = RAW.master;
 let DAILY = RAW.daily;
 let UNIT_SHEET_MAP = {};
@@ -1259,65 +1384,17 @@ function recompute(){
   VALID_DAILY = ALL_DAILY.filter(r=>r.isValid);
 
   /* per-unit aggregate from daily logs */
-  UNIT_AGG = {};
-  MASTER.forEach(u=>{
-    if(!u.sheet){ UNIT_AGG[u.unitId] = null; return; }
-    const recs = VALID_DAILY.filter(r=>r.sheet===u.sheet);
-    let sumPa=0,cPa=0,sumMa=0,cMa=0,sumUtil=0,cUtil=0;
-    let workingDays=0, mechEvents=0, totalMechHours=0, totalPhysHours=0, totalWorkHours=0, totalSchedHours=0;
-    let prevStatus=null;
-    recs.forEach(r=>{
-      if(r.paNum!==null){ sumPa+=r.paNum; cPa++; }
-      if(r.maNum!==null){ sumMa+=r.maNum; cMa++; }
-      if(r.utilNum!==null){ sumUtil+=r.utilNum; cUtil++; }
-      if(r.statusUnit==='Working') workingDays++;
-      if(r.statusUnit==='Mechanical Down'){
-        totalMechHours += (r.mechDownNum||0);
-        if(prevStatus!=='Mechanical Down') mechEvents++;
-      }
-      totalPhysHours += (r.physDownNum||0);
-      totalWorkHours += (r.workingHoursNum||0);
-      totalSchedHours += (r.scheduledHoursNum||0);
-      prevStatus = r.statusUnit;
-    });
-    UNIT_AGG[u.unitId] = {
-      avgPa: cPa? sumPa/cPa : null, avgMa: cMa? sumMa/cMa : null, avgUtil: cUtil? sumUtil/cUtil : null,
-      workingDays, mechEvents, totalMechHours, totalPhysHours, totalWorkHours, totalSchedHours,
-      recordCount: recs.length
-    };
-  });
+  UNIT_AGG = buildUnitAgg(VALID_DAILY);
 
   /* fleet-wide daily trend — dynamic date range from actual data */
   const uniqueDates = [...new Set(VALID_DAILY.map(r=>r.tanggal))].filter(Boolean).sort();
   PERIOD_DATES = uniqueDates;
   DAY_LABELS = uniqueDates.map(d=>{ const dt=parseFlexDate(d); return dt? String(dt.getDate()).padStart(2,'0') : d; });
-  TREND = uniqueDates.map((iso,i)=>{
-    const rows = VALID_DAILY.filter(r=>r.tanggal===iso);
-    const pa = rows.filter(r=>r.paNum!==null); const ma = rows.filter(r=>r.maNum!==null); const ut = rows.filter(r=>r.utilNum!==null);
-    return {
-      day: DAY_LABELS[i],
-      pa: pa.length? pa.reduce((s,r)=>s+r.paNum,0)/pa.length : null,
-      ma: ma.length? ma.reduce((s,r)=>s+r.maNum,0)/ma.length : null,
-      util: ut.length? ut.reduce((s,r)=>s+r.utilNum,0)/ut.length : null
-    };
-  });
+  TREND = buildTrend(VALID_DAILY, uniqueDates, DAY_LABELS);
 
   /* pareto downtime categories */
-  const paretoMap = {};
-  VALID_DAILY.forEach(r=>{
-    let key = r.kategoriDowntime && r.kategoriDowntime.length ? r.kategoriDowntime : null;
-    if(!key){
-      if(r.statusUnit==='Mechanical Down' || r.statusUnit==='Physical Down') key='Lainnya / Tidak Terkategori';
-      else return;
-    }
-    if(!paretoMap[key]) paretoMap[key] = {category:key, events:0, hours:0};
-    paretoMap[key].events++;
-    paretoMap[key].hours += (r.physDownNum || r.mechDownNum || r.standbyHoursNum || 0);
-  });
-  PARETO = Object.values(paretoMap).sort((a,b)=>b.hours-a.hours);
-  paretoTotalHours = PARETO.reduce((s,p)=>s+p.hours,0);
-  let cum = 0;
-  PARETO.forEach(p=>{ p.pct = paretoTotalHours? (p.hours/paretoTotalHours*100):0; cum += p.pct; p.cumPct = cum; });
+  const pr = buildPareto(VALID_DAILY);
+  PARETO = pr.list; paretoTotalHours = pr.total;
 
   /* alerts */
   ALERTS = [];
@@ -1353,14 +1430,180 @@ function recompute(){
   warnAlerts = ALERTS.filter(a=>a.level==='warn');
 }
 
-/* effective PA/MA/Util per unit: prefer daily agg, fall back to master field */
-function effPa(u){ const a=UNIT_AGG[u.unitId]; return (a&&a.avgPa!==null) ? a.avgPa : u.paNum; }
-function effMa(u){ const a=UNIT_AGG[u.unitId]; return (a&&a.avgMa!==null) ? a.avgMa : u.maNum; }
-function effUtil(u){ const a=UNIT_AGG[u.unitId]; return (a&&a.avgUtil!==null) ? a.avgUtil : u.utilNum; }
+/* reusable: build per-unit aggregate from an arbitrary set of (already-flattened) daily records */
+function buildUnitAgg(records){
+  const agg = {};
+  MASTER.forEach(u=>{
+    if(!u.sheet){ agg[u.unitId] = null; return; }
+    const recs = records.filter(r=>r.sheet===u.sheet);
+    let sumPa=0,cPa=0,sumMa=0,cMa=0,sumUtil=0,cUtil=0;
+    let workingDays=0, mechEvents=0, totalMechHours=0, totalPhysHours=0, totalWorkHours=0, totalSchedHours=0;
+    let prevStatus=null;
+    recs.forEach(r=>{
+      if(r.paNum!==null){ sumPa+=r.paNum; cPa++; }
+      if(r.maNum!==null){ sumMa+=r.maNum; cMa++; }
+      if(r.utilNum!==null){ sumUtil+=r.utilNum; cUtil++; }
+      if(r.statusUnit==='Working') workingDays++;
+      if(r.statusUnit==='Mechanical Down'){
+        totalMechHours += (r.mechDownNum||0);
+        if(prevStatus!=='Mechanical Down') mechEvents++;
+      }
+      totalPhysHours += (r.physDownNum||0);
+      totalWorkHours += (r.workingHoursNum||0);
+      totalSchedHours += (r.scheduledHoursNum||0);
+      prevStatus = r.statusUnit;
+    });
+    agg[u.unitId] = {
+      avgPa: cPa? sumPa/cPa : null, avgMa: cMa? sumMa/cMa : null, avgUtil: cUtil? sumUtil/cUtil : null,
+      workingDays, mechEvents, totalMechHours, totalPhysHours, totalWorkHours, totalSchedHours,
+      recordCount: recs.length
+    };
+  });
+  return agg;
+}
+
+/* reusable: build fleet-wide daily trend (avg PA/MA/Util per day) from an arbitrary set of records */
+function buildTrend(records, dates, labels){
+  return dates.map((iso,i)=>{
+    const rows = records.filter(r=>r.tanggal===iso);
+    const pa = rows.filter(r=>r.paNum!==null); const ma = rows.filter(r=>r.maNum!==null); const ut = rows.filter(r=>r.utilNum!==null);
+    return {
+      day: labels[i],
+      pa: pa.length? pa.reduce((s,r)=>s+r.paNum,0)/pa.length : null,
+      ma: ma.length? ma.reduce((s,r)=>s+r.maNum,0)/ma.length : null,
+      util: ut.length? ut.reduce((s,r)=>s+r.utilNum,0)/ut.length : null
+    };
+  });
+}
+
+/* ---------- trend granularity aggregation (harian/mingguan/bulanan/tahunan) ---------- */
+const GRAN_MONTH_NAMES = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+function granPeriodKey(iso, gran){
+  const d = parseFlexDate(iso);
+  if(!d) return iso;
+  if(gran==='daily') return iso;
+  if(gran==='weekly'){
+    const dow = (d.getDay()+6)%7; // 0=Senin
+    const monday = new Date(d.getFullYear(), d.getMonth(), d.getDate()-dow);
+    return isoOfDate(monday);
+  }
+  if(gran==='monthly') return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+  if(gran==='yearly') return String(d.getFullYear());
+  return iso;
+}
+function granPeriodLabel(key, gran){
+  if(gran==='daily' || gran==='weekly'){
+    const d = parseFlexDate(key);
+    return d ? String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0') : key;
+  }
+  if(gran==='monthly'){ const [y,m] = key.split('-'); return GRAN_MONTH_NAMES[(+m)-1]+' '+y; }
+  if(gran==='yearly') return key;
+  return key;
+}
+/* generic aggregator: groups any records (with .tanggal/.paNum/.maNum/.utilNum) into PA/MA/Util series at the chosen granularity */
+function aggregateTrend(records, gran){
+  const groups = {};
+  records.forEach(r=>{
+    if(!r.tanggal) return;
+    const k = granPeriodKey(r.tanggal, gran);
+    if(!groups[k]) groups[k] = { pa:[], ma:[], util:[] };
+    if(r.paNum!==null) groups[k].pa.push(r.paNum);
+    if(r.maNum!==null) groups[k].ma.push(r.maNum);
+    if(r.utilNum!==null) groups[k].util.push(r.utilNum);
+  });
+  const keys = Object.keys(groups).sort();
+  const avg = arr=> arr.length? arr.reduce((s,v)=>s+v,0)/arr.length : null;
+  return {
+    labels: keys.map(k=>granPeriodLabel(k, gran)),
+    pa: keys.map(k=>avg(groups[k].pa)),
+    ma: keys.map(k=>avg(groups[k].ma)),
+    util: keys.map(k=>avg(groups[k].util))
+  };
+}
+/* aggregate Working/Standby/Downtime hours for the stacked "Breakdown Jam Kerja" chart */
+function aggregateHours(records, gran){
+  const groups = {};
+  records.forEach(r=>{
+    if(!r.tanggal) return;
+    const k = granPeriodKey(r.tanggal, gran);
+    if(!groups[k]) groups[k] = { working:0, standby:0, downtime:0 };
+    groups[k].working += (r.workingHoursNum||0);
+    groups[k].downtime += (r.physDownNum||0);
+    groups[k].standby += Math.max(0, (r.standbyHoursNum||0) - (r.physDownNum||0));
+  });
+  const keys = Object.keys(groups).sort();
+  return {
+    labels: keys.map(k=>granPeriodLabel(k, gran)),
+    working: keys.map(k=>groups[k].working),
+    standby: keys.map(k=>groups[k].standby),
+    downtime: keys.map(k=>groups[k].downtime)
+  };
+}
+function initGranToggle(containerId, onChange){
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  el.querySelectorAll('.gran-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      el.querySelectorAll('.gran-btn').forEach(b=>b.classList.toggle('active', b===btn));
+      onChange(btn.dataset.gran);
+    });
+  });
+}
+
+/* reusable: build pareto downtime breakdown from an arbitrary set of records */
+function buildPareto(records){
+  const paretoMap = {};
+  records.forEach(r=>{
+    let key = r.kategoriDowntime && r.kategoriDowntime.length ? r.kategoriDowntime : null;
+    if(!key){
+      if(r.statusUnit==='Mechanical Down' || r.statusUnit==='Physical Down') key='Lainnya / Tidak Terkategori';
+      else return;
+    }
+    if(!paretoMap[key]) paretoMap[key] = {category:key, events:0, hours:0};
+    paretoMap[key].events++;
+    paretoMap[key].hours += (r.physDownNum || r.mechDownNum || r.standbyHoursNum || 0);
+  });
+  const list = Object.values(paretoMap).sort((a,b)=>b.hours-a.hours);
+  const total = list.reduce((s,p)=>s+p.hours,0);
+  let cum = 0;
+  list.forEach(p=>{ p.pct = total? (p.hours/total*100):0; cum += p.pct; p.cumPct = cum; });
+  return { list, total };
+}
+
+/* effective PA/MA/Util per unit: prefer daily agg (optionally a scoped/filtered one), fall back to master field */
+function effPa(u, aggSrc){ const a=(aggSrc||UNIT_AGG)[u.unitId]; return (a&&a.avgPa!==null) ? a.avgPa : u.paNum; }
+function effMa(u, aggSrc){ const a=(aggSrc||UNIT_AGG)[u.unitId]; return (a&&a.avgMa!==null) ? a.avgMa : u.maNum; }
+function effUtil(u, aggSrc){ const a=(aggSrc||UNIT_AGG)[u.unitId]; return (a&&a.avgUtil!==null) ? a.avgUtil : u.utilNum; }
 function dailyForUnit(unitId){
   const u = MASTER.find(m=>m.unitId===unitId);
   if(!u || !u.sheet) return [];
   return VALID_DAILY.filter(r=>r.sheet===u.sheet);
+}
+
+/* ---------- global date-range filter (Dashboard, Daily Monitoring, Reliability, Delay & Pareto) ---------- */
+let DATE_FILTER = { mode:'all', start:null, end:null };
+function isoOfDate(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function dataDateBounds(){
+  if(!PERIOD_DATES.length) return {min:null, max:null};
+  return { min:PERIOD_DATES[0], max:PERIOD_DATES[PERIOD_DATES.length-1] };
+}
+function computeFilterRange(){
+  const {min,max} = dataDateBounds();
+  if(!min || !max) return {start:null, end:null};
+  const maxD = parseFlexDate(max);
+  switch(DATE_FILTER.mode){
+    case 'daily': return {start:max, end:max};
+    case 'weekly': { const s=new Date(maxD); s.setDate(s.getDate()-6); return {start:isoOfDate(s)<min?min:isoOfDate(s), end:max}; }
+    case 'monthly': { const s=new Date(maxD.getFullYear(), maxD.getMonth(), 1); return {start:isoOfDate(s)<min?min:isoOfDate(s), end:max}; }
+    case 'yearly': { const s=new Date(maxD.getFullYear(), 0, 1); return {start:isoOfDate(s)<min?min:isoOfDate(s), end:max}; }
+    case 'custom': return {start:DATE_FILTER.start||min, end:DATE_FILTER.end||max};
+    default: return {start:min, end:max};
+  }
+}
+function filteredValidDaily(){
+  const {start,end} = computeFilterRange();
+  if(!start || !end) return VALID_DAILY;
+  return VALID_DAILY.filter(r=> r.tanggal>=start && r.tanggal<=end);
 }
 
 recompute();
@@ -1415,13 +1658,15 @@ function renderFleetKpis(){
 }
 
 function renderReliabilityKpis(){
-  const withPa = MASTER.map(effPa).filter(v=>v!==null);
-  const withMa = MASTER.map(effMa).filter(v=>v!==null);
-  const withUt = MASTER.map(effUtil).filter(v=>v!==null);
+  const fRecords = filteredValidDaily();
+  const fAgg = buildUnitAgg(fRecords);
+  const withPa = MASTER.map(u=>effPa(u,fAgg)).filter(v=>v!==null);
+  const withMa = MASTER.map(u=>effMa(u,fAgg)).filter(v=>v!==null);
+  const withUt = MASTER.map(u=>effUtil(u,fAgg)).filter(v=>v!==null);
   const avg = a=> a.length? (a.reduce((s,v)=>s+v,0)/a.length) : null;
   const avgPa = avg(withPa), avgMa = avg(withMa), avgUt = avg(withUt);
-  const totalDownH = MASTER.reduce((s,u)=>{ const a=UNIT_AGG[u.unitId]; return s + (a? a.totalPhysHours:0); },0);
-  const totalWorkH = MASTER.reduce((s,u)=>{ const a=UNIT_AGG[u.unitId]; return s + (a? a.totalWorkHours:0); },0);
+  const totalDownH = MASTER.reduce((s,u)=>{ const a=fAgg[u.unitId]; return s + (a? a.totalPhysHours:0); },0);
+  const totalWorkH = MASTER.reduce((s,u)=>{ const a=fAgg[u.unitId]; return s + (a? a.totalWorkHours:0); },0);
 
   document.getElementById('kpiReliability').innerHTML = [
     kpiCard({label:'Avg Physical Avail. (PA)', value:avgPa!==null?avgPa.toFixed(1):'–', unit:'%', icon:'fa-gauge', accent:COL.green, accentDim:'#123322'}),
@@ -1434,14 +1679,19 @@ function renderReliabilityKpis(){
 }
 
 let chartTrend, chartCondition, chartType, chartParetoMini;
+let dashboardTrendGran = 'daily';
 function renderCharts(){
+  const fRecords = filteredValidDaily();
+  const fPareto = buildPareto(fRecords);
+  const fTrend = aggregateTrend(fRecords, dashboardTrendGran);
+
   const ctx1 = document.getElementById('chartTrend');
   if(chartTrend) chartTrend.destroy();
   chartTrend = new Chart(ctx1, { type:'line',
-    data:{ labels:DAY_LABELS, datasets:[
-      {label:'PA %', data:TREND.map(t=>t.pa), borderColor:COL.green, backgroundColor:'rgba(47,212,122,.08)', tension:.35, fill:true, pointRadius:0, borderWidth:2, spanGaps:true},
-      {label:'MA %', data:TREND.map(t=>t.ma), borderColor:COL.blue, backgroundColor:'transparent', tension:.35, pointRadius:0, borderWidth:2, spanGaps:true},
-      {label:'Utilisasi %', data:TREND.map(t=>t.util), borderColor:COL.yellow, backgroundColor:'transparent', tension:.35, pointRadius:0, borderWidth:2, spanGaps:true},
+    data:{ labels:fTrend.labels, datasets:[
+      {label:'PA %', data:fTrend.pa, borderColor:COL.green, backgroundColor:'rgba(47,212,122,.08)', tension:.35, fill:true, pointRadius:0, borderWidth:2, spanGaps:true},
+      {label:'MA %', data:fTrend.ma, borderColor:COL.blue, backgroundColor:'transparent', tension:.35, pointRadius:0, borderWidth:2, spanGaps:true},
+      {label:'Utilisasi %', data:fTrend.util, borderColor:COL.yellow, backgroundColor:'transparent', tension:.35, pointRadius:0, borderWidth:2, spanGaps:true},
     ]},
     options:{ responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
       plugins:{ legend:{position:'top', labels:{boxWidth:10,boxHeight:10,usePointStyle:true,pointStyle:'circle'}} },
@@ -1468,7 +1718,7 @@ function renderCharts(){
 
   const ctx4 = document.getElementById('chartParetoMini');
   if(chartParetoMini) chartParetoMini.destroy();
-  const top6 = PARETO.slice(0,6);
+  const top6 = fPareto.list.slice(0,6);
   chartParetoMini = new Chart(ctx4, { type:'bar',
     data:{ labels:top6.map(p=>p.category), datasets:[{ data:top6.map(p=>p.hours.toFixed(1)), backgroundColor:[COL.red,COL.orange,COL.yellow,COL.blue,COL.green,COL.gray], borderRadius:4, maxBarThickness:26 }] },
     options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
@@ -1486,17 +1736,18 @@ function topListRow(rank, name, valStr, fraction, color){
 }
 
 function renderTopLists(){
-  const paList = MASTER.map(u=>({u, v:effPa(u)})).filter(x=>x.v!==null).sort((a,b)=>a.v-b.v).slice(0,6);
+  const fAgg = buildUnitAgg(filteredValidDaily());
+  const paList = MASTER.map(u=>({u, v:effPa(u,fAgg)})).filter(x=>x.v!==null).sort((a,b)=>a.v-b.v).slice(0,6);
   document.getElementById('worstPaList').innerHTML = paList.length? paList.map((x,i)=>
     topListRow(i+1, x.u.name+' · '+x.u.unitId, x.v.toFixed(0)+'%', x.v/100, x.v<50?COL.red:(x.v<75?COL.orange:COL.green))
   ).join('') : '<div class="empty-state"><i class="fa-solid fa-inbox"></i>Tidak ada data</div>';
 
-  const utilList = MASTER.map(u=>({u, v:effUtil(u)})).filter(x=>x.v!==null).sort((a,b)=>b.v-a.v).slice(0,6);
+  const utilList = MASTER.map(u=>({u, v:effUtil(u,fAgg)})).filter(x=>x.v!==null).sort((a,b)=>b.v-a.v).slice(0,6);
   document.getElementById('topUtilList').innerHTML = utilList.length? utilList.map((x,i)=>
     topListRow(i+1, x.u.name+' · '+x.u.unitId, x.v.toFixed(0)+'%', x.v/100)
   ).join('') : '<div class="empty-state"><i class="fa-solid fa-inbox"></i>Tidak ada data</div>';
 
-  const bdList = MASTER.map(u=>({u, v:(UNIT_AGG[u.unitId]?UNIT_AGG[u.unitId].mechEvents:0)})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v).slice(0,6);
+  const bdList = MASTER.map(u=>({u, v:(fAgg[u.unitId]?fAgg[u.unitId].mechEvents:0)})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v).slice(0,6);
   const maxBd = bdList.length? bdList[0].v : 1;
   document.getElementById('topBreakdownList').innerHTML = bdList.length? bdList.map((x,i)=>
     topListRow(i+1, x.u.name+' · '+x.u.unitId, x.v+'x', x.v/maxBd, COL.red)
@@ -1682,14 +1933,10 @@ function openUnitModal(unitId){
 
   const ctx = document.getElementById('modalTrendChart');
   if(modalTrendChart) modalTrendChart.destroy();
-  modalTrendChart = new Chart(ctx, { type:'line',
-    data:{ labels:recs.map(r=>fmtDate(r.tanggal)), datasets:[
-      {label:'PA %', data:recs.map(r=>r.paNum), borderColor:COL.green, tension:.3, pointRadius:2, borderWidth:2, spanGaps:true},
-      {label:'MA %', data:recs.map(r=>r.maNum), borderColor:COL.blue, tension:.3, pointRadius:2, borderWidth:2, spanGaps:true},
-      {label:'Util %', data:recs.map(r=>r.utilNum), borderColor:COL.yellow, tension:.3, pointRadius:2, borderWidth:2, spanGaps:true},
-    ]},
-    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'top'}},
-      scales:{ y:{min:0,max:100,grid:gridOpt(),ticks:{callback:v=>v+'%'}}, x:{grid:{display:false}, ticks:{maxRotation:0,autoSkip:true,maxTicksLimit:10}} } } });
+  modalRecs = recs;
+  modalTrendGran = 'daily';
+  document.querySelectorAll('#granModal .gran-btn').forEach(b=>b.classList.toggle('active', b.dataset.gran==='daily'));
+  renderModalTrendChart();
 
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.querySelector('.tab-btn[data-tab="overview"]').classList.add('active');
@@ -1699,6 +1946,22 @@ function openUnitModal(unitId){
   document.getElementById('unitModal').classList.add('open');
 }
 function closeUnitModal(){ document.getElementById('unitModal').classList.remove('open'); }
+
+let modalRecs = [];
+let modalTrendGran = 'daily';
+function renderModalTrendChart(){
+  const ctx = document.getElementById('modalTrendChart');
+  if(modalTrendChart) modalTrendChart.destroy();
+  const t = aggregateTrend(modalRecs, modalTrendGran);
+  modalTrendChart = new Chart(ctx, { type:'line',
+    data:{ labels:t.labels, datasets:[
+      {label:'PA %', data:t.pa, borderColor:COL.green, tension:.3, pointRadius:2, borderWidth:2, spanGaps:true},
+      {label:'MA %', data:t.ma, borderColor:COL.blue, tension:.3, pointRadius:2, borderWidth:2, spanGaps:true},
+      {label:'Util %', data:t.util, borderColor:COL.yellow, tension:.3, pointRadius:2, borderWidth:2, spanGaps:true},
+    ]},
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'top'}},
+      scales:{ y:{min:0,max:100,grid:gridOpt(),ticks:{callback:v=>v+'%'}}, x:{grid:{display:false}, ticks:{maxRotation:0,autoSkip:true,maxTicksLimit:10}} } } });
+}
 
 function initModal(){
   document.getElementById('modalCloseBtn').addEventListener('click', closeUnitModal);
@@ -1712,6 +1975,7 @@ function initModal(){
       if(modalTrendChart) modalTrendChart.resize();
     });
   });
+  initGranToggle('granModal', gran=>{ modalTrendGran = gran; renderModalTrendChart(); });
 }
 /* ================= RENDER: DAILY MONITORING ================= */
 let dailyState = { search:'', unit:'', status:'', cat:'', sortKey:'tanggal', sortDir:1, page:1, pageSize:15 };
@@ -1730,7 +1994,7 @@ function populateDailyFilters(){
 
 function filteredDaily(){
   const s = dailyState.search.toLowerCase();
-  let arr = VALID_DAILY.filter(r=>{
+  let arr = filteredValidDaily().filter(r=>{
     if(dailyState.unit && r.unitId!==dailyState.unit) return false;
     if(dailyState.status && r.statusUnit!==dailyState.status) return false;
     if(dailyState.cat && r.kategoriDowntime!==dailyState.cat) return false;
@@ -1802,6 +2066,8 @@ function initDailyView(){
 }
 /* ================= RENDER: RELIABILITY ================= */
 let chartUnitTrend, chartUnitHours, chartPaRanking;
+let reliabilityTrendGran = 'daily';
+let hoursGran = 'daily';
 function populateReliUnitSelect(){
   const sel = document.getElementById('reliUnitSelect');
   const withData = MASTER.filter(u=>u.sheet);
@@ -1813,8 +2079,10 @@ function renderReliabilityView(){
   const unitId = document.getElementById('reliUnitSelect').value;
   const u = MASTER.find(m=>m.unitId===unitId);
   if(!u) return;
-  const agg = UNIT_AGG[unitId];
-  const recs = dailyForUnit(unitId).sort((a,b)=>a.tanggal.localeCompare(b.tanggal));
+  const fRecordsAll = filteredValidDaily();
+  const fAgg = buildUnitAgg(fRecordsAll);
+  const agg = fAgg[unitId];
+  const recs = fRecordsAll.filter(r=>r.sheet===u.sheet).sort((a,b)=>a.tanggal.localeCompare(b.tanggal));
 
   document.getElementById('reliChartTitle').textContent = 'Trend Harian — '+u.name;
 
@@ -1829,37 +2097,40 @@ function renderReliabilityView(){
 
   const ctx1 = document.getElementById('chartUnitTrend');
   if(chartUnitTrend) chartUnitTrend.destroy();
+  const unitTrend = aggregateTrend(recs, reliabilityTrendGran);
   chartUnitTrend = new Chart(ctx1, { type:'line',
-    data:{ labels:recs.map(r=>fmtDate(r.tanggal)), datasets:[
-      {label:'PA %', data:recs.map(r=>r.paNum), borderColor:COL.green, tension:.3, pointRadius:2, borderWidth:2, spanGaps:true},
-      {label:'MA %', data:recs.map(r=>r.maNum), borderColor:COL.blue, tension:.3, pointRadius:2, borderWidth:2, spanGaps:true},
-      {label:'Util %', data:recs.map(r=>r.utilNum), borderColor:COL.yellow, tension:.3, pointRadius:2, borderWidth:2, spanGaps:true},
+    data:{ labels:unitTrend.labels, datasets:[
+      {label:'PA %', data:unitTrend.pa, borderColor:COL.green, tension:.3, pointRadius:2, borderWidth:2, spanGaps:true},
+      {label:'MA %', data:unitTrend.ma, borderColor:COL.blue, tension:.3, pointRadius:2, borderWidth:2, spanGaps:true},
+      {label:'Util %', data:unitTrend.util, borderColor:COL.yellow, tension:.3, pointRadius:2, borderWidth:2, spanGaps:true},
     ]},
     options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'top'}},
       scales:{ y:{min:0,max:100,grid:gridOpt(),ticks:{callback:v=>v+'%'}}, x:{grid:{display:false}, ticks:{maxTicksLimit:10}} } } });
 
   const ctx2 = document.getElementById('chartUnitHours');
   if(chartUnitHours) chartUnitHours.destroy();
+  const hoursAgg = aggregateHours(recs, hoursGran);
   chartUnitHours = new Chart(ctx2, { type:'bar',
-    data:{ labels:recs.map(r=>fmtDate(r.tanggal)), datasets:[
-      {label:'Working', data:recs.map(r=>r.workingHoursNum), backgroundColor:COL.green, stack:'s'},
-      {label:'Standby', data:recs.map(r=>Math.max(0,(r.standbyHoursNum||0) - (r.physDownNum||0))), backgroundColor:COL.blue, stack:'s'},
-      {label:'Downtime', data:recs.map(r=>r.physDownNum), backgroundColor:COL.red, stack:'s'},
+    data:{ labels:hoursAgg.labels, datasets:[
+      {label:'Working', data:hoursAgg.working, backgroundColor:COL.green, stack:'s'},
+      {label:'Standby', data:hoursAgg.standby, backgroundColor:COL.blue, stack:'s'},
+      {label:'Downtime', data:hoursAgg.downtime, backgroundColor:COL.red, stack:'s'},
     ]},
     options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'top'}},
       scales:{ y:{stacked:true, grid:gridOpt()}, x:{stacked:true, grid:{display:false}, ticks:{maxTicksLimit:10}} } } });
 
   const ctx3 = document.getElementById('chartPaRanking');
   if(chartPaRanking) chartPaRanking.destroy();
-  const ranked = MASTER.map(m=>({name:m.unitId, v:effPa(m)})).filter(x=>x.v!==null).sort((a,b)=>b.v-a.v);
+  const ranked = MASTER.map(m=>({name:m.unitId, v:effPa(m,fAgg)})).filter(x=>x.v!==null).sort((a,b)=>b.v-a.v);
+  document.getElementById('chartPaRankingWrap').style.height = Math.max(280, ranked.length*28+40)+'px';
   chartPaRanking = new Chart(ctx3, { type:'bar',
-    data:{ labels:ranked.map(r=>r.name), datasets:[{ data:ranked.map(r=>r.v.toFixed(1)), backgroundColor:ranked.map(r=>r.v<50?COL.red:(r.v<75?COL.orange:COL.green)), borderRadius:3, maxBarThickness:18 }] },
-    options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
-      scales:{ x:{min:0,max:100,grid:gridOpt(),ticks:{callback:v=>v+'%'}}, y:{grid:{display:false}, ticks:{font:{size:9.5}}} } } });
+    data:{ labels:ranked.map(r=>r.name), datasets:[{ data:ranked.map(r=>r.v.toFixed(1)), backgroundColor:ranked.map(r=>r.v<50?COL.red:(r.v<75?COL.orange:COL.green)), borderRadius:3, maxBarThickness:20, barPercentage:0.85, categoryPercentage:0.9 }] },
+    options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}, tooltip:{callbacks:{label:ctx=>ctx.parsed.x+'%'}}},
+      scales:{ x:{min:0,max:100,grid:gridOpt(),ticks:{callback:v=>v+'%'}}, y:{grid:{display:false}, ticks:{font:{size:10.5}, autoSkip:false}} } } });
 
-  const withAgg = MASTER.filter(m=>UNIT_AGG[m.unitId]).sort((a,b)=>(UNIT_AGG[b.unitId].totalMechHours)-(UNIT_AGG[a.unitId].totalMechHours));
+  const withAgg = MASTER.filter(m=>fAgg[m.unitId]).sort((a,b)=>(fAgg[b.unitId].totalMechHours)-(fAgg[a.unitId].totalMechHours));
   document.getElementById('mtbfTbody').innerHTML = withAgg.map(m=>{
-    const a = UNIT_AGG[m.unitId];
+    const a = fAgg[m.unitId];
     const avgPer = a.mechEvents? (a.totalMechHours/a.mechEvents).toFixed(1) : '–';
     return `<tr><td class="strong">${esc(m.unitId)}</td><td class="mono">${a.workingDays}</td><td class="mono">${a.mechEvents}</td><td class="mono">${a.totalMechHours.toFixed(1)}</td><td class="mono">${avgPer}</td></tr>`;
   }).join('');
@@ -1868,39 +2139,43 @@ function renderReliabilityView(){
 function initReliabilityView(){
   populateReliUnitSelect();
   document.getElementById('reliUnitSelect').addEventListener('change', renderReliabilityView);
+  initGranToggle('granReliability', gran=>{ reliabilityTrendGran = gran; renderReliabilityView(); });
+  initGranToggle('granHours', gran=>{ hoursGran = gran; renderReliabilityView(); });
   renderReliabilityView();
 }
 
 /* ================= RENDER: DELAY & PARETO ================= */
 let chartParetoFull;
 function renderDelayView(){
-  const totalDowntimeEvents = PARETO.reduce((s,p)=>s+p.events,0);
-  const topCat = PARETO[0];
-  const unitsAffected = new Set(VALID_DAILY.filter(r=>r.kategoriDowntime).map(r=>r.unitId)).size;
+  const fRecords = filteredValidDaily();
+  const fp = buildPareto(fRecords);
+  const totalDowntimeEvents = fp.list.reduce((s,p)=>s+p.events,0);
+  const topCat = fp.list[0];
+  const unitsAffected = new Set(fRecords.filter(r=>r.kategoriDowntime).map(r=>r.unitId)).size;
 
   document.getElementById('kpiDelay').innerHTML = [
     kpiCard({label:'Total Kejadian Delay', value: totalDowntimeEvents, unit:'kejadian', icon:'fa-list-check', accent:COL.orange, accentDim:'#3a2810'}),
-    kpiCard({label:'Total Jam Downtime', value: paretoTotalHours.toFixed(0), unit:'jam', icon:'fa-hourglass-half', accent:COL.red, accentDim:'#3a1216'}),
+    kpiCard({label:'Total Jam Downtime', value: fp.total.toFixed(0), unit:'jam', icon:'fa-hourglass-half', accent:COL.red, accentDim:'#3a1216'}),
     kpiCard({label:'Kategori Terbesar', value: topCat? topCat.category : '–', icon:'fa-flag', accent:COL.yellow, accentDim:'#5c4a12'}),
     kpiCard({label:'Unit Terdampak', value: unitsAffected, unit:'unit', icon:'fa-triangle-exclamation', accent:COL.blue, accentDim:'#0f2a38'}),
   ].join('');
 
   const ctx = document.getElementById('chartParetoFull');
   if(chartParetoFull) chartParetoFull.destroy();
-  chartParetoFull = new Chart(ctx, { type:'bar', data:{ labels:PARETO.map(p=>p.category),
+  chartParetoFull = new Chart(ctx, { type:'bar', data:{ labels:fp.list.map(p=>p.category),
       datasets:[
-        { type:'bar', label:'Jam Downtime', data:PARETO.map(p=>p.hours.toFixed(1)), backgroundColor:COL.yellow, borderRadius:4, order:2, yAxisID:'y' },
-        { type:'line', label:'Kumulatif %', data:PARETO.map(p=>p.cumPct.toFixed(1)), borderColor:COL.red, backgroundColor:COL.red, tension:.25, pointRadius:3, borderWidth:2, order:1, yAxisID:'y1' }
+        { type:'bar', label:'Jam Downtime', data:fp.list.map(p=>p.hours.toFixed(1)), backgroundColor:COL.yellow, borderRadius:4, order:2, yAxisID:'y' },
+        { type:'line', label:'Kumulatif %', data:fp.list.map(p=>p.cumPct.toFixed(1)), borderColor:COL.red, backgroundColor:COL.red, tension:.25, pointRadius:3, borderWidth:2, order:1, yAxisID:'y1' }
       ]},
     options:{ responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
       plugins:{ legend:{position:'top'} },
       scales:{ y:{grid:gridOpt(), title:{display:true,text:'Jam'}}, y1:{type:'linear', position:'right', min:0,max:100, grid:{display:false}, ticks:{callback:v=>v+'%'}}, x:{grid:{display:false}} } } });
 
-  document.getElementById('paretoTbody').innerHTML = PARETO.map(p=>`
+  document.getElementById('paretoTbody').innerHTML = fp.list.map(p=>`
     <tr><td class="strong">${esc(p.category)}</td><td class="mono">${p.events}</td><td class="mono">${p.hours.toFixed(1)}</td><td class="mono">${p.pct.toFixed(1)}%</td><td class="mono">${p.cumPct.toFixed(1)}%</td></tr>`).join('');
 
   const byUnit = {};
-  VALID_DAILY.forEach(r=>{ if(r.statusUnit!=='Working'){ byUnit[r.unitId]=(byUnit[r.unitId]||0)+1; } });
+  fRecords.forEach(r=>{ if(r.statusUnit!=='Working'){ byUnit[r.unitId]=(byUnit[r.unitId]||0)+1; } });
   const rankedDelay = Object.entries(byUnit).sort((a,b)=>b[1]-a[1]).slice(0,8);
   const maxD = rankedDelay.length? rankedDelay[0][1] : 1;
   document.getElementById('topDelayUnits').innerHTML = rankedDelay.length? rankedDelay.map(([id,v],i)=>
@@ -2038,6 +2313,52 @@ function loadPmSettings(){
 }
 function savePmSettings(){
   try{ localStorage.setItem('mineroz_pm_settings', JSON.stringify(PM_SETTINGS)); }catch(e){}
+}
+
+/* ================= AUTOSAVE FLEET DATA (localStorage) ================= */
+function saveFleetDataToStorage(){
+  try{
+    localStorage.setItem('mineroz_fleet_snapshot', JSON.stringify(RAW));
+    const ts = new Date().toISOString();
+    localStorage.setItem('mineroz_fleet_snapshot_ts', ts);
+    AUTOSAVE_INFO = { ts };
+    updateAutosaveIndicator();
+    return true;
+  }catch(e){
+    console.error('Autosave gagal:', e);
+    return false;
+  }
+}
+function clearFleetDataStorage(){
+  try{ localStorage.removeItem('mineroz_fleet_snapshot'); localStorage.removeItem('mineroz_fleet_snapshot_ts'); }catch(e){}
+  AUTOSAVE_INFO = null;
+  updateAutosaveIndicator();
+}
+function resetToOriginalData(){
+  RAW = JSON.parse(JSON.stringify(ORIGINAL_RAW));
+  MASTER = RAW.master;
+  DAILY = RAW.daily;
+  clearFleetDataStorage();
+  recompute();
+  refreshAllViews();
+  switchView('dashboard');
+  showToast('Data dikembalikan ke bawaan file ini — data tersimpan otomatis telah dihapus.');
+}
+function fbFormatTimestamp(iso){
+  if(!iso) return '';
+  const d = new Date(iso);
+  if(isNaN(d)) return '';
+  return d.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+}
+function updateAutosaveIndicator(){
+  const el = document.getElementById('autosaveIndicator');
+  if(!el) return;
+  if(AUTOSAVE_INFO){
+    el.style.display = 'flex';
+    el.querySelector('.as-text').textContent = 'Tersimpan otomatis · '+fbFormatTimestamp(AUTOSAVE_INFO.ts);
+  } else {
+    el.style.display = 'none';
+  }
 }
 
 function computeForecastRows(){
@@ -2275,11 +2596,13 @@ const VIEW_META = {
   reports: {title:'Report Center', sub:'Susun laporan siap cetak'},
   guide: {title:'Petunjuk Penggunaan', sub:'Cara pakai Fleet Command'}
 };
+const FILTERABLE_VIEWS = new Set(['dashboard','daily','reliability','delay']);
 function switchView(name){
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.view===name));
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active', v.id==='view-'+name));
   document.getElementById('topbarTitle').textContent = VIEW_META[name].title;
   document.getElementById('topbarSub').textContent = VIEW_META[name].sub;
+  document.getElementById('dateFilterBar').classList.toggle('hidden', !FILTERABLE_VIEWS.has(name));
   if(window.innerWidth<=980) document.getElementById('sidebar').classList.remove('open');
   if(name==='reliability' && chartUnitTrend) setTimeout(()=>{chartUnitTrend.resize();chartUnitHours.resize();chartPaRanking.resize();},50);
 }
@@ -2311,6 +2634,67 @@ function initSidebarCollapse(){
   });
 }
 
+/* ================= DATE RANGE FILTER BAR ================= */
+const FB_MODE_LABEL = { all:'Semua data', daily:'Harian (hari terakhir)', weekly:'Mingguan (7 hari terakhir)', monthly:'Bulanan (bulan berjalan)', yearly:'Tahunan (tahun berjalan)', custom:'Custom' };
+function fbFormatDate(iso){
+  const d = parseFlexDate(iso);
+  return d ? d.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}) : iso;
+}
+function updateFilterSummary(){
+  const {start,end} = computeFilterRange();
+  const summaryEl = document.getElementById('fbSummary');
+  if(!start || !end){ summaryEl.textContent = 'Tidak ada data'; return; }
+  const dayCount = Math.round((parseFlexDate(end)-parseFlexDate(start))/86400000)+1;
+  summaryEl.textContent = FB_MODE_LABEL[DATE_FILTER.mode]+' · '+fbFormatDate(start)+' – '+fbFormatDate(end)+' ('+dayCount+' hari)';
+}
+function applyDateFilterRerender(){
+  updateFilterSummary();
+  const activeView = document.querySelector('.view.active');
+  const activeId = activeView ? activeView.id : '';
+  renderDashboard();
+  dailyState.page = 1;
+  renderDailyTable();
+  if(activeId==='view-reliability') renderReliabilityView();
+  renderDelayView();
+}
+function initDateFilterBar(){
+  const {min,max} = dataDateBounds();
+  if(min) document.getElementById('fbStart').min = min;
+  if(max) document.getElementById('fbEnd').max = max;
+  if(min) document.getElementById('fbStart').value = min;
+  if(max) document.getElementById('fbEnd').value = max;
+
+  document.querySelectorAll('#fbPresets .fb-preset').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const mode = btn.dataset.mode;
+      DATE_FILTER.mode = mode;
+      document.querySelectorAll('#fbPresets .fb-preset').forEach(b=>b.classList.toggle('active', b===btn));
+      document.getElementById('fbCustomRange').style.display = mode==='custom' ? 'flex' : 'none';
+      if(mode!=='custom') applyDateFilterRerender();
+    });
+  });
+  document.getElementById('fbApplyCustom').addEventListener('click', ()=>{
+    const s = document.getElementById('fbStart').value;
+    const e = document.getElementById('fbEnd').value;
+    if(!s || !e){ showToast('Pilih tanggal mulai dan akhir dulu.', true); return; }
+    if(s>e){ showToast('Tanggal mulai tidak boleh setelah tanggal akhir.', true); return; }
+    DATE_FILTER.mode = 'custom'; DATE_FILTER.start = s; DATE_FILTER.end = e;
+    applyDateFilterRerender();
+  });
+  updateFilterSummary();
+}
+function resetDateFilterBar(){
+  DATE_FILTER = { mode:'all', start:null, end:null };
+  document.querySelectorAll('#fbPresets .fb-preset').forEach(b=>b.classList.toggle('active', b.dataset.mode==='all'));
+  document.getElementById('fbCustomRange').style.display = 'none';
+  const {min,max} = dataDateBounds();
+  const fbStart = document.getElementById('fbStart'), fbEnd = document.getElementById('fbEnd');
+  if(min){ fbStart.min = min; fbStart.value = min; }
+  if(max){ fbEnd.max = max; fbEnd.value = max; }
+  updateFilterSummary();
+}
+
+
 /* ================= TOAST ================= */
 let toastTimer;
 function showToast(msg, isError){
@@ -2320,7 +2704,8 @@ function showToast(msg, isError){
   t.classList.toggle('error', !!isError);
   t.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=> t.classList.remove('show'), isError ? 5000 : 3200);
+  const dur = Math.max(isError?5000:3200, Math.min(9000, msg.length*70));
+  toastTimer = setTimeout(()=> t.classList.remove('show'), dur);
 }
 
 /* ================= EXCEL UPLOAD & PARSING ================= */
@@ -2451,6 +2836,7 @@ function refreshAllViews(){
   document.getElementById('footPeriod').textContent = RAW.period || '–';
   document.getElementById('footUnitCount').textContent = MASTER.length;
   document.getElementById('topbarSub').textContent = 'Ringkasan performa fleet — ' + (RAW.period||'');
+  resetDateFilterBar();
 
   unitsState.page=1; unitsState.search=''; unitsState.condition=''; unitsState.type=''; unitsState.cat='';
   document.getElementById('unitSearch').value=''; document.getElementById('filterCondition').value='';
@@ -2474,31 +2860,80 @@ function refreshAllViews(){
   renderDashboard();
 }
 
-function handleExcelFile(file){
-  const reader = new FileReader();
-  reader.onload = function(e){
-    try{
-      const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, {type:'array', cellDates:true});
-      const newRaw = parseWorkbookToRaw(workbook);
-      if(!newRaw.master.length && Object.keys(newRaw.daily).length===0){
-        showToast('File tidak dikenali — pastikan format sama seperti template (sheet "Rekapitulasi" + sheet per unit).', true);
-        return;
-      }
-      RAW = newRaw;
-      MASTER = newRaw.master;
-      DAILY = newRaw.daily;
-      recompute();
-      refreshAllViews();
-      switchView('dashboard');
-      showToast('Data berhasil diperbarui — '+MASTER.length+' unit, '+Object.keys(DAILY).length+' unit dengan log harian.');
-    }catch(err){
-      console.error(err);
-      showToast('Gagal membaca file Excel: '+err.message, true);
+function readFileAsArrayBuffer(file){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = e=> resolve(e.target.result);
+    reader.onerror = ()=> reject(new Error('Gagal membaca "'+file.name+'"'));
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+/* Gabungkan beberapa file bulanan: log harian di-merge (per tanggal, file terbaru menang bila tanggal sama),
+   master/kondisi/PM pakai snapshot dari file dengan tanggal data terakhir paling baru. */
+function mergeParsedWorkbooks(parsedList){
+  parsedList.forEach(p=>{
+    const dates = Object.values(p.daily).flatMap(d=>d.records.map(r=>r.tanggal)).filter(Boolean).sort();
+    p._lastDate = dates.length ? dates[dates.length-1] : '0000-00-00';
+  });
+  parsedList.sort((a,b)=> a._lastDate.localeCompare(b._lastDate)); // kronologis: lama -> baru
+
+  const mergedDaily = {};
+  parsedList.forEach(p=>{
+    Object.keys(p.daily).forEach(sheet=>{
+      if(!mergedDaily[sheet]) mergedDaily[sheet] = { meta:{}, records:[] };
+      mergedDaily[sheet].meta = Object.assign({}, mergedDaily[sheet].meta, p.daily[sheet].meta);
+      const byDate = {};
+      mergedDaily[sheet].records.forEach(r=> byDate[r.tanggal]=r);
+      p.daily[sheet].records.forEach(r=> byDate[r.tanggal]=r); // file lebih baru menimpa tanggal yang sama
+      mergedDaily[sheet].records = Object.values(byDate).sort((a,b)=> (a.tanggal||'').localeCompare(b.tanggal||''));
+    });
+  });
+
+  const masterMap = {};
+  parsedList.forEach(p=> p.master.forEach(u=>{ masterMap[u.unitId] = u; })); // file lebih baru menimpa -> master jadi snapshot terkini
+  const mergedMaster = Object.values(masterMap);
+
+  const periodLabel = parsedList.length>1
+    ? (parsedList[0].period || '?') + ' – ' + (parsedList[parsedList.length-1].period || '?')
+    : (parsedList[0].period || '');
+
+  return { master:mergedMaster, daily:mergedDaily, period:periodLabel, fileCount:parsedList.length };
+}
+
+async function handleExcelFiles(fileList){
+  const files = Array.from(fileList);
+  if(!files.length) return;
+  try{
+    const buffers = await Promise.all(files.map(readFileAsArrayBuffer));
+    const parsedList = buffers.map(buf=>{
+      const workbook = XLSX.read(new Uint8Array(buf), {type:'array', cellDates:true});
+      return parseWorkbookToRaw(workbook);
+    }).filter(p=> p.master.length>0 || Object.keys(p.daily).length>0);
+
+    if(!parsedList.length){
+      showToast('Tidak ada file yang bisa dibaca — pastikan formatnya sesuai template (sheet "Rekapitulasi" + sheet per unit).', true);
+      return;
     }
-  };
-  reader.onerror = function(){ showToast('Gagal membaca file.', true); };
-  reader.readAsArrayBuffer(file);
+
+    const newRaw = mergeParsedWorkbooks(parsedList);
+    RAW = newRaw;
+    MASTER = newRaw.master;
+    DAILY = newRaw.daily;
+    recompute();
+    refreshAllViews();
+    switchView('dashboard');
+
+    const saved = saveFleetDataToStorage();
+    const msg = (parsedList.length>1
+      ? 'Berhasil menggabungkan '+parsedList.length+' file ('+newRaw.period+') — '+MASTER.length+' unit, '+Object.keys(DAILY).length+' unit dengan log harian.'
+      : 'Data berhasil diperbarui — '+MASTER.length+' unit, '+Object.keys(DAILY).length+' unit dengan log harian.')
+      + (saved ? ' Tersimpan otomatis di browser ini.' : ' (Autosave gagal — data hanya berlaku untuk sesi ini.)');
+    showToast(msg);
+  }catch(err){
+    console.error(err);
+    showToast('Gagal memproses file Excel: '+err.message, true);
+  }
 }
 
 function initUploader(){
@@ -2506,10 +2941,15 @@ function initUploader(){
   const input = document.getElementById('excelFileInput');
   btn.addEventListener('click', ()=> input.click());
   input.addEventListener('change', (e)=>{
-    const file = e.target.files[0];
-    if(file) handleExcelFile(file);
+    if(e.target.files && e.target.files.length) handleExcelFiles(e.target.files);
     input.value = '';
   });
+  document.getElementById('btnResetData').addEventListener('click', ()=>{
+    if(confirm('Kembalikan ke data bawaan file ini? Data hasil upload yang tersimpan otomatis akan dihapus dari browser ini.')){
+      resetToOriginalData();
+    }
+  });
+  updateAutosaveIndicator();
 }
 
 /* ================= GUIDE / FAQ ================= */
@@ -2525,7 +2965,9 @@ window.openUnitModal = openUnitModal;
 function boot(){
   initNav();
   initSidebarCollapse();
+  initDateFilterBar();
   initUploader();
+  initGranToggle('granDashboard', gran=>{ dashboardTrendGran = gran; renderCharts(); });
   renderDashboard();
   initUnitsView();
   initDailyView();
@@ -2538,6 +2980,9 @@ function boot(){
   document.getElementById('periodLabel').textContent = (RAW.period||'AGT 2026');
   document.getElementById('footPeriod').textContent = RAW.period || 'Agustus 2026';
   document.getElementById('footUnitCount').textContent = MASTER.length;
+  if(AUTOSAVE_INFO){
+    showToast('Memuat data tersimpan dari sesi sebelumnya ('+fbFormatTimestamp(AUTOSAVE_INFO.ts)+') — '+MASTER.length+' unit.');
+  }
 }
 document.addEventListener('DOMContentLoaded', boot);
 
